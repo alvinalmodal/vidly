@@ -1,8 +1,6 @@
 const startUpDebugger = require('debug')('app:startup');
-const dbDebugger = require('debug')('app:db');
-const config = require('config');
 const express = require('express');
-const auth = require('./authenticate');
+const auth = require('./middleware/authenticate');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const home = require('./routes/home');
@@ -14,20 +12,19 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.static('public'));
 app.use(helmet());
 
-// routes
-app.use('/',home);
-app.use('/api/v1/genres',genres);
-
 if(app.get('env') === 'development')
 {
     app.use(morgan('tiny'));
     startUpDebugger('morgan enabled....');
 } 
 
-// db debugger
-dbDebugger('Connected to the database...');
-
 app.use(auth.auth);
+
+// routes
+app.use('/',home);
+app.use('/api/v1/genres',genres);
+
+
 
 const port = process.env.PORT || 3000;
 

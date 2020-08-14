@@ -2,5 +2,8 @@
     "name":"development",
     "mail":{
         "host":"development mail server"
+    },
+    "genre":{
+        "server":"mongodb://localhost/vidly"
     }
 }
