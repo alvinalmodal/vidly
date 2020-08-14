@@ -1,6 +1,6 @@
 const express = require('express');
 const Joi = require('joi');
-const Genre = require('./../models/genre');
+const {Genre} = require('./../models/genre');
 var mongoose = require('mongoose');
 const router = express.Router();
 

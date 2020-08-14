@@ -8,5 +8,8 @@
     },
     "customer":{
         "server":"mongodb://localhost/vidly"
+    },
+    "movie":{
+        "server":"mongodb://localhost/vidly"
     }
 }
