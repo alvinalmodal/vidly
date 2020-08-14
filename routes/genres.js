@@ -10,7 +10,7 @@ let validateGenre = function(genre){
         name:Joi.string().min(3).required()
     });
 
-    let {error} = schema.validate(genre);
+    let {error} = schema.validate(genre,{abortEarly:false});
     if(error){
         errors = error.details.map( error => {
             return {key:error.context.key,message:error.message};
@@ -70,7 +70,7 @@ router.put('/:id',async function(req,res){
 
 router.delete('/:id',async function(req,res){
     try {
-        const result = await Genre.findByIdAndDelete(req.params.id);
+        const result = await Genre.findOneAndRemove(req.params.id);
         return res.status(200).send(result);
     } catch (error) {
         return res.status(400).send(error);

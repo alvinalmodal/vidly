@@ -5,5 +5,8 @@
     },
     "genre":{
         "server":"mongodb://localhost/vidly"
+    },
+    "customer":{
+        "server":"mongodb://localhost/vidly"
     }
 }

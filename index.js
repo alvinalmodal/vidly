@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const home = require('./routes/home');
 const genres = require('./routes/genres');
+const customers = require('./routes/customers');
 const app = express();
 
 app.use(express.json());
@@ -23,6 +24,7 @@ app.use(auth.auth);
 // routes
 app.use('/',home);
 app.use('/api/v1/genres',genres);
+app.use('/api/v1/customers',customers);
 
 
 
