@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const config = require('config');
 const genreModelDebugger = require('debug')('app:genreModel');
 
-mongoose.connect(config.get('genre.server'),{useNewUrlParser:true,useUnifiedTopology:true})
+mongoose.connect(
+    // build mongodb server url.
+    `${config.get('genre.serverPrefix')}${config.get('mongodb.username')}:${config.get('mongodb.password')}${config.get('genre.serverSuffix')}`,
+    {useNewUrlParser:true,useUnifiedTopology:true}
+)
 .then(()=> {
     genreModelDebugger("Successfully connected to the database.");
 })

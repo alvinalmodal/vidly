@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 const config = require('config');
 const { ref } = require('joi');
 const movieModelDebugger = require('debug')('app:movieModel');
-const {genreSchema} = require('./../models/genre');
 
-mongoose.connect(config.get('movie.server'),{useNewUrlParser:true,useUnifiedTopology:true})
+mongoose.connect(
+    // build mongodb server url.
+    `${config.get('movie.serverPrefix')}${config.get('mongodb.username')}:${config.get('mongodb.password')}${config.get('movie.serverSuffix')}`,
+    {useNewUrlParser:true,useUnifiedTopology:true}
+)
 .then(()=> {
     movieModelDebugger("Successfully connected to the database.");
 })
@@ -19,7 +22,19 @@ const movieSchema = new mongoose.Schema({
         minlength:3,
         maxlength:500
     },
-    genre:{type:genreSchema,required:true},
+    genre:{
+        type: new mongoose.Schema({
+            _id:{
+                type:String,
+                required:true
+            },
+            name:{
+                type:String,
+                required:true
+            }
+        }),
+        required:true
+    },
     numberInStock:{
         type:Number,
         default:0,

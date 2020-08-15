@@ -2,8 +2,11 @@ const mongoose = require('mongoose');
 const config = require('config');
 const rentalModelDebugger = require('debug')('app:rentalModel');
 
-
-mongoose.connect(config.get('rental.server'),{useNewUrlParser:true,useUnifiedTopology:true})
+mongoose.connect(
+    // build mongodb server url.
+    `${config.get('rental.serverPrefix')}${config.get('mongodb.username')}:${config.get('mongodb.password')}${config.get('rental.serverSuffix')}`,
+    {useNewUrlParser:true,useUnifiedTopology:true}
+)
 .then(()=> {
     rentalModelDebugger("Successfully connected to the database.");
 })
@@ -17,7 +20,6 @@ const rentalSchema = new mongoose.Schema({
                     _id:{type:String,required:true},
                     title:{type:String,required:true}
                 })],
-                ref:"Movie",
                 validate: v => Array.isArray(v) && v.length > 0,
                 message: 'Rental should have at least one movie.'
             },

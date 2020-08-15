@@ -1,5 +1,6 @@
 {
-    "mail":{
-        "password":"app_password"
+    "mongodb":{
+        "username":"app_db_username",
+        "password":"app_db_password"
     }
 }

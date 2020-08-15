@@ -4,15 +4,19 @@
         "host":"development mail server"
     },
     "genre":{
-        "server":"mongodb://localhost/vidly"
+        "serverPrefix":"mongodb+srv://",
+        "serverSuffix":"@demoprojects.vzu1e.mongodb.net/vidly?retryWrites=true&w=majority"
     },
     "customer":{
-        "server":"mongodb://localhost/vidly"
+        "serverPrefix":"mongodb+srv://",
+        "serverSuffix":"@demoprojects.vzu1e.mongodb.net/vidly?retryWrites=true&w=majority"
     },
     "movie":{
-        "server":"mongodb://localhost/vidly"
+        "serverPrefix":"mongodb+srv:",
+        "serverSuffix":"@demoprojects.vzu1e.mongodb.net/vidly?retryWrites=true&w=majority"
     },
     "rental":{
-        "server":"mongodb://localhost/vidly"
+        "serverPrefix":"mongodb+srv://",
+        "serverSuffix":"@demoprojects.vzu1e.mongodb.net/vidly?retryWrites=true&w=majority"
     }
 }

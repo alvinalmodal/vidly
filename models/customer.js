@@ -3,7 +3,11 @@ const config = require('config');
 const { string, boolean } = require('joi');
 const customerModelDebugger = require('debug')('app:customerModel');
 
-mongoose.connect(config.get('customer.server'),{useNewUrlParser:true,useUnifiedTopology:true})
+mongoose.connect(
+    // build mongodb server url.
+    `${config.get('customer.serverPrefix')}${config.get('mongodb.username')}:${config.get('mongodb.password')}${config.get('customer.serverSuffix')}`,
+    {useNewUrlParser:true,useUnifiedTopology:true}
+)
 .then(()=> {
     customerModelDebugger("Successfully connected to the database.");
 })
