@@ -11,5 +11,8 @@
     },
     "movie":{
         "server":"mongodb://localhost/vidly"
+    },
+    "rental":{
+        "server":"mongodb://localhost/vidly"
     }
 }

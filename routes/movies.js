@@ -10,7 +10,9 @@ let validateMovie = function(movie){
         genre:Joi.object().keys({
             _id:Joi.string().required(),
             name:Joi.string().required()
-        })
+        }),
+        numberInStock:Joi.number().min(0).required(),
+        dailyRentalRate:Joi.number().min(0).required()
     });
 
     let {error} = schema.validate(movie,{abortEarly:false});

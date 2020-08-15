@@ -24,10 +24,13 @@ const customerSchema = new mongoose.Schema({
     },
     phone: {
         type:String,
-        required:true
+        required:true,
+        min:6,
+        max:50
     }
 },{strict:true});
 
 const Customer = mongoose.model('Customer',customerSchema);
 
-module.exports = Customer;
+module.exports.Customer = Customer;
+module.exports.customerSchema = customerSchema;
