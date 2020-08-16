@@ -103,9 +103,6 @@ router.post('/login',async (req,res) => {
         }
     
         const isValidPassword = await bcrypt.compare(req.body.password,user.password);
-        console.log(isValidPassword);
-        console.log(req.body.password);
-        console.log(user.password);
         if(!isValidPassword)
         {
             return res.status(401).send('Invalid username/password. by password comparison');
@@ -128,17 +125,14 @@ router.post('/login',async (req,res) => {
 });
 
 router.post('/role',async (req,res) => {
-    console.log(req.body);
 
     const errors = validateUserRole(req.body);
     if(errors.length > 0)
     {
         return res.status(400).send(errors);
     }
-    
-    console.log('test');
+
     const user = await User.findById(req.body.user);
-    console.log(user);
     if(!user)
     {
         return res.status(404).send('Invalid user id.');
