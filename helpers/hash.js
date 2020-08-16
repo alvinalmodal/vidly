@@ -1,8 +1,10 @@
 const bcrypt = require('bcrypt');
-const { salt } = require('config');
+const { salt } = require('../config');
 
 async function hash(value){
-    return bcrypt.hash(value,await bcrypt.genSalt(salt));
+    const saltRounds = await bcrypt.genSalt(parseInt(salt));
+    const hashedValue = await bcrypt.hash(value,saltRounds);
+    return hashedValue;
 }
 
 module.exports.hash = hash;
