@@ -1,3 +1,4 @@
+const {port,mongoDbUrl} = require('./config');
 const startUpDebugger = require('debug')('app:startup');
 const express = require('express');
 const auth = require('./middleware/authenticate');
@@ -8,6 +9,8 @@ const genres = require('./routes/genres');
 const customers = require('./routes/customers');
 const movies = require('./routes/movies');
 const rentals = require('./routes/rentals');
+const {hash} = require('./helpers/hash');
+const { has } = require('lodash');
 const app = express();
 
 app.use(express.json());
@@ -29,8 +32,6 @@ app.use('/api/v1/genres',genres);
 app.use('/api/v1/customers',customers);
 app.use('/api/v1/movies',movies);
 app.use('/api/v1/rentals',rentals);
-
-const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log(`App running on ${port}`);

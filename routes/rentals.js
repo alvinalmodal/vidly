@@ -1,34 +1,24 @@
+const _ = require('lodash');
 const express = require('express');
 const Joi = require('joi');
-const {rentalSchema,Rental} = require('../models/rental');
-const {movieSchema} = require('../models/movie');
-const mongoose = require('mongoose');
+Joi.objectId = require('joi-objectid')(Joi);
+const { Rental } = require('../models/rental');
+const { Customer } = require('../models/customer');
+const { Movie } = require('../models/movie');
 const router = express.Router();
 
 let validateRental = function(rental){
-
-    const movieJoiSchema = {
-        
-    }
 
     let errors = [];
     let schema = Joi.object({
         movies:Joi.array().items(
             Joi.object().keys({
-                _id:Joi.string().required(),
-                title:Joi.string().min(3).max(500).required()
+                _id:Joi.objectId().required()
             })
         ).min(1).required(),
         customer:Joi.object().keys({
-            _id:Joi.string().required(),
-            isGold:Joi.boolean().required(),
-            name:Joi.string().min(2).max(70).required(),
-            phone:Joi.string().min(6).max(50)
-        }).required(),
-        rentalDate:Joi.date().required(),
-        returnDate:Joi.date(),
-        discount:Joi.number(),
-        totalRentalRate:Joi.number().required()
+            _id:Joi.objectId().required()
+        }).required()
     });
 
     let {error} = schema.validate(rental,{abortEarly:false});
@@ -66,21 +56,49 @@ router.get('/:id',async (req,res) => {
 
 router.post('/',async (req,res) => {
 
-    let newRental = {
-        movies:req.body.movies,
-        customer:req.body.customer,
-        rentalDate:req.body.rentalDate,
-        returnDate:req.body.returnDate,
-        discount:req.body.discount,
-        totalRentalRate:req.body.totalRentalRate
-    }
-    let errors = validateRental(newRental);
+    const errors = validateRental(req.body);
     if(errors.length > 0)
     {
         return res.status(400).send(errors);
     }
 
-    let rental = new Rental(newRental);
+    // check if id of the movies are valid.
+    const movies = await Movie.find({_id:{$in:req.body.movies}});
+    if(movies.length !== req.body.movies.length)
+    {
+        const invalidMovies = _.difference(
+            req.body.movies.map(value => value._id),
+            movies.map(value => value._id.toString())
+        );
+        return res.status(404).send({key:'movies._id',message:'List of _id provided contains an invalid movie',values:invalidMovies});
+    }
+
+    const customer = await Customer.findById(req.body.customer._id);
+    if(!customer)
+    {
+        return res.status(404).send('Invalid customer id.');
+    }
+
+    let discount = 0;
+    if(customer.isGold)
+    {
+        discount = 10;
+    }
+
+    let totalRentalRate = 0;
+    movies.forEach( value => {
+        totalRentalRate += value.dailyRentalRate;
+    });
+
+    let rental = new Rental({
+        movies: movies.map( value => {
+            return {_id:value._id,title:value.title};
+        }),
+        customer: _.pick(customer,['_id','name','phone','isGold']),
+        rentalDate: Date.now(),
+        discount,
+        totalRentalRate: totalRentalRate - discount
+    });
     rental = await rental.save();
     return res.send(rental);
 });

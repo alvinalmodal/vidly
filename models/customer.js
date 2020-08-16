@@ -1,11 +1,10 @@
+const {mongoDbUrl} = require('../config');
 const mongoose = require('mongoose');
-const config = require('config');
-const { string, boolean } = require('joi');
 const customerModelDebugger = require('debug')('app:customerModel');
 
 mongoose.connect(
     // build mongodb server url.
-    `${config.get('customer.serverPrefix')}${config.get('mongodb.username')}:${config.get('mongodb.password')}${config.get('customer.serverSuffix')}`,
+    `${mongoDbUrl}`,
     {useNewUrlParser:true,useUnifiedTopology:true}
 )
 .then(()=> {

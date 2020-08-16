@@ -1,10 +1,10 @@
+const {mongoDbUrl} = require('../config');
 const mongoose = require('mongoose');
-const config = require('config');
 const rentalModelDebugger = require('debug')('app:rentalModel');
 
 mongoose.connect(
     // build mongodb server url.
-    `${config.get('rental.serverPrefix')}${config.get('mongodb.username')}:${config.get('mongodb.password')}${config.get('rental.serverSuffix')}`,
+    `${mongoDbUrl}`,
     {useNewUrlParser:true,useUnifiedTopology:true}
 )
 .then(()=> {

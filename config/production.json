@@ -1,7 +1,0 @@
-{
-    "name":"prod",
-    "mail":{
-        "host":"production mail server",
-        "password":"app_password"
-    }
-}

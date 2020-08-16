@@ -1,11 +1,10 @@
+const {mongoDbUrl} = require('../config');
 const mongoose = require('mongoose');
-const config = require('config');
-const { ref } = require('joi');
 const movieModelDebugger = require('debug')('app:movieModel');
 
 mongoose.connect(
     // build mongodb server url.
-    `${config.get('movie.serverPrefix')}${config.get('mongodb.username')}:${config.get('mongodb.password')}${config.get('movie.serverSuffix')}`,
+    `${mongoDbUrl}`,
     {useNewUrlParser:true,useUnifiedTopology:true}
 )
 .then(()=> {
