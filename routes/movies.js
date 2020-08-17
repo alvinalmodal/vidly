@@ -23,15 +23,15 @@ let validateMovie = function(movie){
     return errors;
 }
 
-router.get('/',async function(req,res){
+router.get('/',async function(req,res,next){
     try {
         return res.send(await Movie.find());
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 
-router.get('/:id',async function(req,res){
+router.get('/:id',async function(req,res,next){
     try 
     {
         let movie = await Movie.findById(req.params.id);
@@ -42,11 +42,11 @@ router.get('/:id',async function(req,res){
         return res.send(movie);
     } 
     catch (error) {
-        return res.status(404).send(error.message);
+        next(error);
     }
 });
 
-router.post('/',async function(req,res){
+router.post('/',async function(req,res,next){
     try {
 
         let errors = validateMovie(req.body);
@@ -76,11 +76,11 @@ router.post('/',async function(req,res){
         return res.send(movie);
 
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 
-router.put('/:id',async function(req,res){
+router.put('/:id',async function(req,res,next){
     try 
     {
         const errors = validateMovie(req.body);
@@ -111,11 +111,11 @@ router.put('/:id',async function(req,res){
         return res.send(movie);
 
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 
-router.delete('/:id',async function(req,res){
+router.delete('/:id',async function(req,res,next){
     try {
         let movie = await Movie.findOneAndRemove(req.params.id);
         if(!movie)
@@ -124,7 +124,7 @@ router.delete('/:id',async function(req,res){
         }
         return res.send(movie);
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 

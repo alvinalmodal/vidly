@@ -22,17 +22,17 @@ let validateRole = function(role){
 }
 
 
-router.get('/',async (req,res) =>{
+router.get('/',async (req,res,next) =>{
     try {
         const roles = await Role.find();
         return res.send(roles);
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
     
 });
 
-router.get('/:id',async (req,res) => {
+router.get('/:id',async (req,res,next) => {
     try {
         const role = await Role.findById(req.params.id);
         if(!role)
@@ -41,11 +41,11 @@ router.get('/:id',async (req,res) => {
         }
         return res.send(role);
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 
-router.post('/',async (req,res) => {
+router.post('/',async (req,res,next) => {
     try {
         
         const errors = validateRole(_.pick(req.body,['name']));
@@ -69,11 +69,11 @@ router.post('/',async (req,res) => {
         return res.send(role);
 
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 
-router.put('/:id',async (req,res) => {
+router.put('/:id',async (req,res,next) => {
     try {
         
         const errors = validateRole(_.pick(req.body,['name']));
@@ -96,16 +96,16 @@ router.put('/:id',async (req,res) => {
         return res.send(role);
 
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 
-router.delete('/:id',async (req,res) => {
+router.delete('/:id',async (req,res,next) => {
     try {
         const role = await Role.findByIdAndRemove(req.params.id);
         return res.send(role);
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 

@@ -26,7 +26,7 @@ let validateCredential = function(user){
     return errors;
 }
 
-router.post('/',async (req,res) => {
+router.post('/',async (req,res,next) => {
     try {
         const errors = validateCredential(req.body);
         if(errors.length > 0)
@@ -57,7 +57,7 @@ router.post('/',async (req,res) => {
         return res.send({token});
 
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 

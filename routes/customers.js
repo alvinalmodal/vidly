@@ -22,16 +22,16 @@ let validateCustomer = function(customer){
     return errors;
 };
 
-router.get('/',async function(req,res){
+router.get('/',async function(req,res,next){
     try {
         const customers = await Customer.find().sort({name:1});
         return res.send(customers);
     } catch (error) {
-        return res.status(400).send(error);
+        next(error);
     }
 });
 
-router.get('/:id',async function(req,res){
+router.get('/:id',async function(req,res,next){
     try {
         const customer = await Customer.findById(req.params.id);
         if(!customer){
@@ -39,13 +39,12 @@ router.get('/:id',async function(req,res){
         }
         return res.send(customer);
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 
-router.post('/',async function(req,res){
+router.post('/',async function(req,res,next){
     try {
-
         let input = req.body;
 
         let errors = validateCustomer(input);
@@ -60,15 +59,12 @@ router.post('/',async function(req,res){
         return res.send(customer);
 
     } catch (error) {
-
-        return res.send(error.message);
-
+        next(error);
     }
 });
 
-router.put('/:id',async function(req,res){
+router.put('/:id',async function(req,res,next){
     try {
-
         let customer = await Customer.findById(req.params.id);
 
         if(!customer)
@@ -92,18 +88,16 @@ router.put('/:id',async function(req,res){
         return res.send(customer);
 
     } catch (error) {
-
-        return res.status(400).send(error.message);
-
+        next(error);
     }
 });
 
-router.delete('/:id',async function(req,res){
+router.delete('/:id',async function(req,res,next){
     try {
         let customer = await Customer.findByIdAndRemove(req.params.id);
         return res.send(customer);
     } catch (error) {
-        return res.status(400).send(error.message);
+        next(error);
     }
 });
 

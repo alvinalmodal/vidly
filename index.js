@@ -1,4 +1,5 @@
-const {port,mongoDbUrl} = require('./config');
+const error = require('./middleware/error');
+const {port} = require('./config');
 const startUpDebugger = require('debug')('app:startup');
 const express = require('express');
 const morgan = require('morgan');
@@ -34,6 +35,9 @@ app.use('/api/v1/rentals',rentals);
 app.use('/api/v1/users',users);
 app.use('/api/v1/tokens',tokens);
 app.use('/api/v1/roles',roles);
+
+// middleware to handle errors.
+app.use(error);
 
 app.listen(port, () => {
     console.log(`App running on ${port}`);
