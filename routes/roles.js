@@ -1,26 +1,8 @@
 const _ = require('lodash');
 const express = require('express');
-const Joi = require('joi');
-Joi.objectId = require('joi-objectid')(Joi);
 const { Role } = require('../models/role');
+const validateRole = require('../validators/role');
 const router = express.Router();
-
-let validateRole = function(role){
-
-    let errors = [];
-    let schema = Joi.object({
-        name:Joi.string().required()
-    });
-
-    let {error} = schema.validate(role,{abortEarly:false});
-    if(error){
-        errors = error.details.map( error => {
-            return {key:error.context.key,message:error.message};
-        });
-    }
-    return errors;
-}
-
 
 router.get('/',async (req,res,next) =>{
     try {

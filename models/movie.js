@@ -1,18 +1,4 @@
-const {mongoDbUrl} = require('../config');
-const mongoose = require('mongoose');
-const movieModelDebugger = require('debug')('app:movieModel');
-
-mongoose.connect(
-    // build mongodb server url.
-    `${mongoDbUrl}`,
-    {useNewUrlParser:true,useUnifiedTopology:true}
-)
-.then(()=> {
-    movieModelDebugger("Successfully connected to the database.");
-})
-.catch(() => {
-    movieModelDebugger("Failed to connect to database.");
-});
+const mongoose = require('../startup/db')('movie');
 
 const movieSchema = new mongoose.Schema({
     title: {

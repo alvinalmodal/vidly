@@ -1,17 +1,4 @@
-const {mongoDbUrl} = require('../config');
-const mongoose = require('mongoose');
-const roleModelDebugger = require('debug')('app:roleModel');
-
-mongoose.connect(
-    `${mongoDbUrl}`,
-    {useNewUrlParser:true,useUnifiedTopology:true}
-)
-.then(()=> {
-    roleModelDebugger("Successfully connected to the database.");
-})
-.catch(() => {
-    roleModelDebugger("Failed to connect to database.");
-});
+const mongoose = require('../startup/db')('role');
 
 const roleSchema = new mongoose.Schema({
     name: {

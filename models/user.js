@@ -1,19 +1,6 @@
-const {mongoDbUrl} = require('../config');
+const mongoose = require('../startup/db')('user');
 const {roleSchema} = require('./role');
-const mongoose = require('mongoose');
-const userModelDebugger = require('debug')('app:userModel');
 
-mongoose.connect(
-    // build mongodb server url.
-    `${mongoDbUrl}`,
-    {useNewUrlParser:true,useUnifiedTopology:true}
-)
-.then(()=> {
-    userModelDebugger("Successfully connected to the database.");
-})
-.catch(() => {
-    userModelDebugger("Failed to connect to database.");
-});
 
 const userSchema = new mongoose.Schema({
     name: {

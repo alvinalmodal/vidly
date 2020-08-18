@@ -1,18 +1,4 @@
-const {mongoDbUrl} = require('../config');
-const mongoose = require('mongoose');
-const genreModelDebugger = require('debug')('app:genreModel');
-
-mongoose.connect(
-    // build mongodb server url.
-    `${mongoDbUrl}`,
-    {useNewUrlParser:true,useUnifiedTopology:true}
-)
-.then(()=> {
-    genreModelDebugger("Successfully connected to the database.");
-})
-.catch(() => {
-    genreModelDebugger("Failed to connect to database.");
-});
+const mongoose = require('../startup/db')('genre');
 
 const genreSchema = new mongoose.Schema({
     name: {

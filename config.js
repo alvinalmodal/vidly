@@ -5,5 +5,6 @@ module.exports = {
   mongoDbUrl: process.env.MONGODB_URL,
   port: process.env.PORT,
   salt: process.env.SALT,
-  jwtSecret: process.env.JWT_SECRET
+  jwtSecret: process.env.JWT_SECRET,
+  env: process.env.NODE_ENV
 };

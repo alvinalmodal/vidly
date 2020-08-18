@@ -1,35 +1,10 @@
 const _ = require('lodash');
 const express = require('express');
-const Joi = require('joi');
-Joi.objectId = require('joi-objectid')(Joi);
 const { Rental } = require('../models/rental');
 const { Customer } = require('../models/customer');
 const { Movie } = require('../models/movie');
+const validateRental = require('../validators/rentals');
 const router = express.Router();
-
-let validateRental = function(rental){
-
-    let errors = [];
-    let schema = Joi.object({
-        movies:Joi.array().items(
-            Joi.object().keys({
-                _id:Joi.objectId().required()
-            })
-        ).min(1).required(),
-        customer:Joi.object().keys({
-            _id:Joi.objectId().required()
-        }).required()
-    });
-
-    let {error} = schema.validate(rental,{abortEarly:false});
-    if(error){
-        errors = error.details.map( error => {
-            return {key:error.context.key,message:error.message};
-        });
-    }
-    return errors;
-}
-
 
 router.get('/',async (req,res,next) =>{
     try {

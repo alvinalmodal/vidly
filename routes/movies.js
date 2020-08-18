@@ -1,27 +1,8 @@
 const express = require('express');
-const Joi = require('joi');
-Joi.objectId = require('joi-objectid')(Joi);
 const {Genre} = require('../models/genre');
 const {Movie} = require('./../models/movie');
+const validateMovie = require('../validators/movie');
 const router = express.Router();
-
-let validateMovie = function(movie){
-    let errors = [];
-    let schema = Joi.object({
-        title:Joi.string().min(3).max(500).required(),
-        genre:Joi.objectId().required(),
-        numberInStock:Joi.number().min(0).required(),
-        dailyRentalRate:Joi.number().min(0).required()
-    });
-
-    let {error} = schema.validate(movie,{abortEarly:false});
-    if(error){
-        errors = error.details.map( error => {
-            return {key:error.context.key,message:error.message};
-        });
-    }
-    return errors;
-}
 
 router.get('/',async function(req,res,next){
     try {

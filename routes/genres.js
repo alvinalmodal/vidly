@@ -1,23 +1,7 @@
 const express = require('express');
-const Joi = require('joi');
 const {Genre} = require('./../models/genre');
-var mongoose = require('mongoose');
+const validateGenre = require('../validators/genre');
 const router = express.Router();
-
-let validateGenre = function(genre){
-    let errors = [];
-    let schema = Joi.object({
-        name:Joi.string().min(3).required()
-    });
-
-    let {error} = schema.validate(genre,{abortEarly:false});
-    if(error){
-        errors = error.details.map( error => {
-            return {key:error.context.key,message:error.message};
-        });
-    }
-    return errors;
-}
 
 router.get('/',async function(req,res,next){
     try {

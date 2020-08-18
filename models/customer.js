@@ -1,18 +1,4 @@
-const {mongoDbUrl} = require('../config');
-const mongoose = require('mongoose');
-const customerModelDebugger = require('debug')('app:customerModel');
-
-mongoose.connect(
-    // build mongodb server url.
-    `${mongoDbUrl}`,
-    {useNewUrlParser:true,useUnifiedTopology:true}
-)
-.then(()=> {
-    customerModelDebugger("Successfully connected to the database.");
-})
-.catch(() => {
-    customerModelDebugger("Failed to connect to database.");
-});
+const mongoose = require('../startup/db')('customer');
 
 const customerSchema = new mongoose.Schema({
     isGold: {

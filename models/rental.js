@@ -1,18 +1,4 @@
-const {mongoDbUrl} = require('../config');
-const mongoose = require('mongoose');
-const rentalModelDebugger = require('debug')('app:rentalModel');
-
-mongoose.connect(
-    // build mongodb server url.
-    `${mongoDbUrl}`,
-    {useNewUrlParser:true,useUnifiedTopology:true}
-)
-.then(()=> {
-    rentalModelDebugger("Successfully connected to the database.");
-})
-.catch(() => {
-    rentalModelDebugger("Failed to connect to database.");
-});
+const mongoose = require('../startup/db')('rental');
 
 const rentalSchema = new mongoose.Schema({
     movies:{
