@@ -3,7 +3,7 @@ const express = require('express');
 const { Rental } = require('../models/rental');
 const { Customer } = require('../models/customer');
 const { Movie } = require('../models/movie');
-const validateRental = require('../validators/rentals');
+const validateRental = require('../validators/rental');
 const router = express.Router();
 
 router.get('/',async (req,res,next) =>{
