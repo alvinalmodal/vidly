@@ -1,4 +1,3 @@
-const {jwtSecret} = require('../config');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -31,7 +30,7 @@ router.post('/',async (req,res,next) => {
             name: user.name,
             roles: user.roles.map( value => value.name)
         },
-            jwtSecret
+            process.env.JWT_SECRET
         );
 
         return res.send({token});

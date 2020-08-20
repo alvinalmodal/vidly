@@ -1,4 +1,5 @@
-const {port} = require('./config');
+require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}`});
+
 const error = require('./middleware/error');
 const express = require('express');
 const app = express();
@@ -12,6 +13,8 @@ require('./startup/routes')(app);
 // middleware to handle errors.
 app.use(error);
 
-app.listen(port, () => {
-    console.log(`App running on ${port}`);
+const server = app.listen(process.env.PORT, () => {
+    console.log(`App running on ${process.env.PORT}`);
 })
+
+module.exports = server;

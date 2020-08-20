@@ -1,4 +1,4 @@
-const validateRole = require('../validators/role');
+const validateRole = require('../../validators/role');
 
 describe('validateRole',() => {
     it('should return errors if invalid role was provided.', () => {

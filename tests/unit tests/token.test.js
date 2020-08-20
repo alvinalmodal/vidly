@@ -1,4 +1,4 @@
-const validateCredential = require('../validators/token');
+const validateCredential = require('../../validators/token');
 
 
 describe('validateCredential',() => {

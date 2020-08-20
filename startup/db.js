@@ -1,11 +1,10 @@
-const {mongoDbUrl} = require('../config');
 const mongoose = require('mongoose');
 const dbDebugger = require('debug')('app:db');
 
 module.exports = function(dbName) {
     mongoose.connect(
         // build mongodb server url.
-        `${mongoDbUrl}`,
+        `${process.env.MONGODB_URL}`,
         {useNewUrlParser:true,useUnifiedTopology:true}
     )
     .then(()=> {

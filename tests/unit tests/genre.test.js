@@ -1,4 +1,4 @@
-const validateGenre = require('../validators/genre');
+const validateGenre = require('../../validators/genre');
 
 describe('validateGenre',() => {
     it('should return errors if invalid genre was provided.', () => {

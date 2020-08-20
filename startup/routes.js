@@ -1,4 +1,3 @@
-const {env} = require('../config');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const home = require('../routes/home');
@@ -17,7 +16,7 @@ module.exports = function(app){
     
     app.use(helmet());
 
-    if(env === 'development')
+    if(process.env.NODE_ENV === 'development')
     {
         app.use(morgan('tiny'));
         startUpDebugger('morgan enabled....');

@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models/user');
 const { Role } = require('../models/role');
 const { hash } = require('../helpers/hash');
-const { jwtSecret } = require('../config');
 const {validateUser,validateUserRole,validateCredential} = require('../validators/user');
 const router = express.Router();
 
@@ -55,7 +54,7 @@ router.post('/login',async (req,res,next) => {
             _id: user._id,
             name: user.name,
         },
-            jwtSecret
+            process.env.JWT_SECRET
         );
 
         res.header('x-auth-token',token);

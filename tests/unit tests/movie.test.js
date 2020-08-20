@@ -1,4 +1,4 @@
-const validateMovie = require('../validators/movie');
+const validateMovie = require('../../validators/movie');
 
 describe('validateMovie',() => {
     it('should return an array if invalid movie was provided.', () => {

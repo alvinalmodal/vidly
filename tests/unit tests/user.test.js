@@ -1,4 +1,4 @@
-const {validateUser,validateUserRole,validateCredential} = require('../validators/user');
+const {validateUser,validateUserRole,validateCredential} = require('../../validators/user');
 
 describe('validateUser',() => {
     it('should return errors if invalid user was provided.', () => {

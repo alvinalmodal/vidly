@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const {jwtSecret} = require('../config');
 
 function isValidRole(userRoles,allowedRoles){
     let isValid = false;
@@ -23,7 +22,7 @@ function auth(allowedRoles){
         }
     
         try {
-            const decoded = jwt.verify(token,jwtSecret);
+            const decoded = jwt.verify(token,process.env.JWT_SECRET);
             req.user = decoded;
             if(isValidRole(req.user.roles,allowedRoles))
             {

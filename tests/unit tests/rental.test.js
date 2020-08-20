@@ -1,4 +1,4 @@
-const validateRental = require('../validators/rental');
+const validateRental = require('../../validators/rental');
 
 describe('validateRental',() => {
     it('should return errors if invalid rental was provided.', () => {
