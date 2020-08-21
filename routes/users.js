@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models/user');
 const { Role } = require('../models/role');
 const { hash } = require('../helpers/hash');
+const { generateToken } = require('../helpers/generatetoken');
 const {validateUser,validateUserRole,validateCredential} = require('../validators/user');
 const router = express.Router();
 
@@ -50,12 +51,7 @@ router.post('/login',async (req,res,next) => {
             return res.status(401).send('Invalid username/password. by password comparison');
         }
 
-        const token = jwt.sign({
-            _id: user._id,
-            name: user.name,
-        },
-            process.env.JWT_SECRET
-        );
+        const token = generateToken(user);
 
         res.header('x-auth-token',token);
 

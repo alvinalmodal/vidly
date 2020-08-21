@@ -23,5 +23,5 @@ module.exports = function(error, req, res, next){
         stackTrace: new Error(error.message).stack
     };
     log('error', error.message,{metadata});
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
 }

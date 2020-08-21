@@ -32,7 +32,7 @@ function auth(allowedRoles){
                 return res.status(403).send('Forbidden');
             }
         } catch (error) {
-            return res.status(400).send(error.message);
+            next(error);
         }
     };
 }

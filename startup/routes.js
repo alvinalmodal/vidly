@@ -24,7 +24,7 @@ module.exports = function(app){
 
     // routes
     app.use('/',home);
-    app.use('/api/v1/genres',genres);
+    app.use('/api/v1/genres',auth(['administrator']),genres);
     app.use('/api/v1/customers',auth(['administrator']),customers);
     app.use('/api/v1/movies',movies);
     app.use('/api/v1/rentals',rentals);
