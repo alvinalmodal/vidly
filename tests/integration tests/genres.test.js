@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const generateToken = require('../../helpers/generatetoken');
 let server;
 
-describe('/api/genres',() => {
+describe('/api/v1/genres',() => {
 
     let user = {
         _id:'1',
@@ -33,6 +33,17 @@ describe('/api/genres',() => {
             expect(res.status).toBe(200);
             expect(res.body.length).toBe(2);
         });
+
+        it('should return 401 when auth token is not provided.', async () => {
+            await Genre.collection.insertMany([
+                {name:"genre1"},
+                {name:"genre2"}
+            ]);
+
+            const res = await request(server).get('/api/v1/genres');
+
+            expect(res.status).toBe(401);
+        });
     });
 
     describe('GET /:id', () => {
@@ -50,6 +61,13 @@ describe('/api/genres',() => {
             const res = await request(server).get(`/api/v1/genres/${id}`).set({'x-auth-token':token});
             expect(res.status).toBe(404);
         });
+
+        it('should return 401 when auth token is not provided.', async () => {
+            const id = 1;
+
+            const res = await request(server).get(`/api/v1/genres/${id}`);
+            expect(res.status).toBe(401);
+        });
     });
 
 
@@ -65,7 +83,7 @@ describe('/api/genres',() => {
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('name',genre.name);
         });
-        it('should return 404 when invalid genre name is provided.', async () => {
+        it('should return 400 when invalid genre name is provided.', async () => {
             const genre = {
                 name:''
             }
@@ -74,6 +92,16 @@ describe('/api/genres',() => {
                 .set({'x-auth-token':token})
                 .send(genre);
             expect(res.status).toBe(400);
+        });
+
+        it('should return 401 when auth token is not provided.', async () => {
+            const genre = {
+                name:''
+            }
+            const res = await request(server)
+                .post(`/api/v1/genres`)
+                .send(genre);
+            expect(res.status).toBe(401);
         });
     });
 
@@ -127,6 +155,21 @@ describe('/api/genres',() => {
                             .send(updatedGenre);
             expect(res.status).toBe(400);
         });
+
+        it('should return 401 when auth token is not provided.', async () => {
+            const genre = new Genre({name:'genre1'});
+            await genre.save();
+
+            const updatedGenre = {
+                _id:genre._id,
+                name:''
+            };
+
+            const res = await request(server)
+                            .put(`/api/v1/genres/${updatedGenre._id}`)
+                            .send(updatedGenre);
+            expect(res.status).toBe(401);
+        });
         
     });
 
@@ -155,6 +198,15 @@ describe('/api/genres',() => {
             expect(res.status).toBe(404);
         });
 
+        it('should return 401 when auth token is not provided.', async () => {
+            const genre = new Genre({name:'genre1'});
+            await genre.save();
+
+            const res = await request(server)
+                            .delete(`/api/v1/genres/${genre._id}`);
+            const genres = await Genre.find();
+            expect(res.status).toBe(401);
+        });
     });
 
 });
