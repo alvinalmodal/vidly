@@ -15,6 +15,6 @@ app.use(error);
 
 const server = app.listen(process.env.PORT, () => {
     console.log(`App running on ${process.env.PORT}`);
-})
+});
 
 module.exports = server;

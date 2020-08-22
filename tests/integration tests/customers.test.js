@@ -115,11 +115,18 @@ describe('/api/v1/customers', () => {
             const customer = exec();
             customer.save();
             const invalidId = 1;
+            user = {
+                _id:'1',
+                name:'testuser',
+                roles:[{_id:1,name:'administrator'},{_id:2,name:'reviewer'}]
+            };
+        
+            token = generateToken(user);
             const res = await request(server)
                                 .get(`/api/v1/customers/${invalidId}`)
                                 .set('x-auth-token',token);
             
-            expect(res.status).toBe(403);
+            expect(res.status).toBe(404);
         });
 
         it('should return 401 when auth token is not provided', async () => {
@@ -242,6 +249,103 @@ describe('/api/v1/customers', () => {
                                 .set('x-auth-token',token)
                                 .send(customer);
             expect(res.status).toBe(403);        
+        });
+    });
+
+    describe('PUT /:id', () => {
+        it('should return 401 if auth token is not provided', async () => {
+            const customer = new Customer({
+                    isGold:true,
+                    name:'Alvin Almodal',
+                    phone:'09151234567',
+            });
+            await customer.save();
+
+            const res = await request(server)
+                                .put(`/api/v1/customers/${customer._id}`);
+            expect(res.status).toBe(401);           
+        });
+        it('should return 403 if user role is invalid.', async () => {
+            const customer = new Customer({
+                isGold:true,
+                name:'Alvin Almodal',
+                phone:'09151234567',
+            });
+            await customer.save();
+            user = {
+                _id:'1',
+                name:'testuser',
+                roles:[{_id:1,name:'invaliduserrole'},{_id:2,name:'reviewer'}]
+            };
+            token = generateToken(user);
+            const res = await request(server)
+                                .put(`/api/v1/customers/${customer._id}`)
+                                .set('x-auth-token',token);
+            expect(res.status).toBe(403);        
+        });
+        it('should return 404 if invalid id is provided.', async () => {
+            const invalidId = 1;
+            user = {
+                _id:'1',
+                name:'testuser',
+                roles:[{_id:1,name:'administrator'},{_id:2,name:'reviewer'}]
+            };
+            token = generateToken(user);
+            const res = await request(server)
+                                .put(`/api/v1/customers/${invalidId}`)
+                                .set('x-auth-token',token);
+            expect(res.status).toBe(404);           
+        });
+        it('should return 400 if invalid customer is provided.', async () => {
+            user = {
+                _id:'1',
+                name:'testuser',
+                roles:[{_id:1,name:'administrator'},{_id:2,name:'reviewer'}]
+            };
+            token = generateToken(user);
+            const customer = new Customer({
+                isGold:true,
+                name:'Alvin Almodal',
+                phone:'09151234567',
+            });
+            await customer.save();
+            const updatedCustomer = {
+                isGold:'',
+                name:'',
+                phoen:'',
+            }
+            const res = await request(server)
+                                .put(`/api/v1/customers/${customer._id}`)
+                                .set('x-auth-token',token)
+                                .send(updatedCustomer);
+            expect(res.status).toBe(400);           
+        });
+        it('should return 200 if valid customer is provided.', async () => {
+            user = {
+                _id:'1',
+                name:'testuser',
+                roles:[{_id:1,name:'administrator'},{_id:2,name:'reviewer'}]
+            };
+            token = generateToken(user);
+            const customer = new Customer({
+                isGold:true,
+                name:'Alvin Almodal',
+                phone:'09151234567',
+            });
+            await customer.save();
+            const updatedCustomer = {
+                isGold:false,
+                name:'Alvin Almodals1',
+                phone:'1111111111'
+            }
+            const res = await request(server)
+                                .put(`/api/v1/customers/${customer._id}`)
+                                .set('x-auth-token',token)
+                                .send(updatedCustomer);
+            expect(res.status).toBe(200);
+            expect(res.body).toHaveProperty('name','Alvin Almodals1');
+            expect(res.body).toHaveProperty('phone','1111111111');
+            expect(res.body).toHaveProperty('isGold',false);
         });
     });
 });

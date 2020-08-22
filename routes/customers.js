@@ -2,6 +2,7 @@ const express = require('express');
 const Joi = require('joi');
 const {Customer} = require('./../models/customer');
 const validateCustomer = require('../validators/customer');
+const validateId = require('../middleware/validateId');
 const router = express.Router();
 
 router.get('/',async function(req,res,next){
@@ -13,7 +14,7 @@ router.get('/',async function(req,res,next){
     }
 });
 
-router.get('/:id',async function(req,res,next){
+router.get('/:id',validateId,async function(req,res,next){
     try {
         const customer = await Customer.findById(req.params.id);
         if(!customer){
@@ -45,7 +46,7 @@ router.post('/',async function(req,res,next){
     }
 });
 
-router.put('/:id',async function(req,res,next){
+router.put('/:id',validateId,async function(req,res,next){
     try {
         let customer = await Customer.findById(req.params.id);
 

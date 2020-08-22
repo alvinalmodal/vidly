@@ -15,11 +15,16 @@ process.on('unhandledRejection', (ex) => {
 });
 
 module.exports = function(error, req, res, next){
+
+    // check user ip.
+    const forwarded = req.headers['x-forwarded-for'];
+    const ip = forwarded ? forwarded.split(/, /)[0] : req.connection.remoteAddress;
+
     // log exception
     const metadata = {
         url:req.url,
         method:req.method,
-        ip:req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        ip,
         stackTrace: new Error(error.message).stack
     };
     log('error', error.message,{metadata});
