@@ -6,17 +6,6 @@ const { exceptions } = require("winston");
 let server;
 
 describe("/api/v1/customers", () => {
-  let user = {
-    _id: "1",
-    name: "testuser",
-    roles: [
-      { _id: 1, name: "administrator" },
-      { _id: 2, name: "reviewer" },
-    ],
-  };
-
-  let token = generateToken(user);
-
   beforeEach(() => {
     server = require("../../index");
   });
@@ -24,6 +13,17 @@ describe("/api/v1/customers", () => {
     await Customer.deleteMany({});
     server.close();
   });
+
+  const generateAuthToken = function (role) {
+    const user = {
+      _id: "1",
+      name: "testuser",
+      roles: [],
+    };
+    user.roles.push(role);
+    const token = generateToken(user);
+    return token;
+  };
 
   describe("GET /", () => {
     it("should return list of customers", async () => {
@@ -39,6 +39,8 @@ describe("/api/v1/customers", () => {
           phone: "09151234567",
         },
       ]);
+
+      const token = generateAuthToken({ name: "administrator" });
 
       const res = await request(server)
         .get("/api/v1/customers")
@@ -67,17 +69,6 @@ describe("/api/v1/customers", () => {
     });
 
     it("should return 403 when user role is not administrator.", async () => {
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "ordinarytestuser" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-
-      token = generateToken(user);
-
       await Customer.insertMany([
         {
           isGold: true,
@@ -90,6 +81,8 @@ describe("/api/v1/customers", () => {
           phone: "09151234567",
         },
       ]);
+
+      const token = generateAuthToken({ name: "test" });
 
       const res = await request(server)
         .get("/api/v1/customers")
@@ -113,16 +106,7 @@ describe("/api/v1/customers", () => {
       const customer = exec();
       customer.save();
       const invalidId = 1;
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "administrator" });
       const res = await request(server)
         .get(`/api/v1/customers/${invalidId}`)
         .set("x-auth-token", token);
@@ -142,15 +126,9 @@ describe("/api/v1/customers", () => {
     it("should return 403 when auth role is invalid.", async () => {
       const customer = exec();
       await customer.save();
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "invalidroletest" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+
+      const token = generateAuthToken({ name: "test" });
+
       const invalidId = 1;
       const res = await request(server)
         .get(`/api/v1/customers/${invalidId}`)
@@ -162,15 +140,7 @@ describe("/api/v1/customers", () => {
     it("should return 200 when valid customer is provided.", async () => {
       const customer = exec();
       await customer.save();
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "administrator" });
       const res = await request(server)
         .get(`/api/v1/customers/${customer._id}`)
         .set("x-auth-token", token);
@@ -188,15 +158,9 @@ describe("/api/v1/customers", () => {
         name: "Pendro Penduko",
         phone: "09151234567",
       };
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+
+      const token = generateAuthToken({ name: "administrator" });
+
       const res = await request(server)
         .post("/api/v1/customers")
         .set("x-auth-token", token)
@@ -211,15 +175,9 @@ describe("/api/v1/customers", () => {
         name: "",
         phone: "",
       };
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+
+      const token = generateAuthToken({ name: "administrator" });
+
       const res = await request(server)
         .post("/api/v1/customers")
         .set("x-auth-token", token)
@@ -246,15 +204,7 @@ describe("/api/v1/customers", () => {
         name: "",
         phone: "",
       };
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "invaliduserrole" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "test" });
       const res = await request(server)
         .post("/api/v1/customers")
         .set("x-auth-token", token)
@@ -284,15 +234,7 @@ describe("/api/v1/customers", () => {
         phone: "09151234567",
       });
       await customer.save();
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "invaliduserrole" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "test" });
       const res = await request(server)
         .put(`/api/v1/customers/${customer._id}`)
         .set("x-auth-token", token);
@@ -300,30 +242,14 @@ describe("/api/v1/customers", () => {
     });
     it("should return 404 if invalid id is provided.", async () => {
       const invalidId = 1;
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "administrator" });
       const res = await request(server)
         .put(`/api/v1/customers/${invalidId}`)
         .set("x-auth-token", token);
       expect(res.status).toBe(404);
     });
     it("should return 400 if invalid customer is provided.", async () => {
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "administrator" });
       const customer = new Customer({
         isGold: true,
         name: "Alvin Almodal",
@@ -342,15 +268,7 @@ describe("/api/v1/customers", () => {
       expect(res.status).toBe(400);
     });
     it("should return 200 if valid customer is provided.", async () => {
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "administrator" });
       const customer = new Customer({
         isGold: true,
         name: "Alvin Almodal",
@@ -396,15 +314,7 @@ describe("/api/v1/customers", () => {
       });
       await customer.save();
 
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "invalidUserRole" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "test" });
 
       const res = await request(server)
         .delete(`/api/v1/customers/${customer._id}`)
@@ -415,15 +325,7 @@ describe("/api/v1/customers", () => {
     it("should return 404 when invalid customer id is provided.", async () => {
       const invalidId = 1;
 
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "administrator" });
 
       const res = await request(server)
         .delete(`/api/v1/customers/${invalidId}`)
@@ -440,15 +342,7 @@ describe("/api/v1/customers", () => {
       });
       await customer.save();
 
-      user = {
-        _id: "1",
-        name: "testuser",
-        roles: [
-          { _id: 1, name: "administrator" },
-          { _id: 2, name: "reviewer" },
-        ],
-      };
-      token = generateToken(user);
+      const token = generateAuthToken({ name: "administrator" });
 
       const res = await request(server)
         .delete(`/api/v1/customers/${customer._id}`)
