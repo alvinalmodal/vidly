@@ -293,31 +293,15 @@ describe("/api/v1/customers", () => {
 
   describe("DELETE /:id", () => {
     it("should return 401 when auth token is not provided", async () => {
-      const customer = new Customer({
-        isGold: true,
-        name: "Alvin Almodal",
-        phone: "09151234567",
-      });
-      await customer.save();
-
-      const res = await request(server).delete(
-        `/api/v1/customers/${customer._id}`
-      );
+      const res = await request(server).delete("/api/v1/customers/1");
       expect(res.status).toBe(401);
     });
 
     it("should return 403 when role is invalid", async () => {
-      const customer = new Customer({
-        isGold: true,
-        name: "Alvin Almodal",
-        phone: "09151234567",
-      });
-      await customer.save();
-
       const token = generateAuthToken({ name: "test" });
 
       const res = await request(server)
-        .delete(`/api/v1/customers/${customer._id}`)
+        .delete("/api/v1/customers/1")
         .set("x-auth-token", token);
       expect(res.status).toBe(403);
     });

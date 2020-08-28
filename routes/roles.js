@@ -75,7 +75,11 @@ router.put("/:id", validateId, async (req, res, next) => {
 
 router.delete("/:id", validateId, async (req, res, next) => {
   try {
-    const role = await Role.findByIdAndRemove(req.params.id);
+    let role = await Role.findById(req.params.id);
+    if (!role) {
+      return res.status(404).send("Invalid role id.");
+    }
+    await role.remove();
     return res.send(role);
   } catch (error) {
     next(error);

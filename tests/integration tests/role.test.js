@@ -6,6 +6,14 @@ const generateToken = require("../../helpers/generatetoken");
 let server;
 
 describe("/api/v1/roles", () => {
+  beforeEach(() => {
+    server = require("../../index");
+  });
+  afterEach(async () => {
+    await Role.deleteMany({});
+    server.close();
+  });
+
   const generateAuthToken = function (role) {
     const user = {
       _id: "1",
@@ -24,14 +32,6 @@ describe("/api/v1/roles", () => {
     await role.save();
     return role;
   };
-
-  beforeEach(() => {
-    server = require("../../index");
-  });
-  afterEach(async () => {
-    await Role.deleteMany({});
-    server.close();
-  });
 
   describe("GET /", () => {
     it("should return 401 if auth token is not provided.", async () => {

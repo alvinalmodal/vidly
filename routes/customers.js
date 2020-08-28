@@ -72,7 +72,12 @@ router.put("/:id", validateId, async function (req, res, next) {
 
 router.delete("/:id", validateId, async function (req, res, next) {
   try {
-    let customer = await Customer.findByIdAndRemove(req.params.id);
+    let customer = await Customer.findById(req.params.id);
+    if (!customer) {
+      return res.status(404).send("Invalid customer id.");
+    }
+    await customer.remove();
+
     return res.send(customer);
   } catch (error) {
     next(error);
